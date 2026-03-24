@@ -4,6 +4,7 @@
 - Preserve the planned feature structure under `src/app/`: route pages belong in `features/<feature>/pages/`, while reusable cross-cutting code belongs under `core/` or `shared/`.
 - This project is aligned to Playwright-only browser verification; do not add Karma/Jasmine scaffolding back unless the product requirements change.
 - Shared app chrome should live in a standalone shell component mounted from `src/app/app.routes.ts`; keep feature pages as child routes so the header and navigation are defined once.
+- App-wide localStorage bootstrap belongs in `src/app/app.config.ts` via an application initializer, which keeps schema seeding out of route components and ensures storage is ready before the shell renders.
 - Browser verification runs through `playwright.config.ts`, which starts `ng serve` on `127.0.0.1:4200`; store UI specs under `tests/` and ignore generated `test-results/` artifacts.
 - App-wide design tokens and layout primitives belong in `src/styles.scss`; standalone route components should consume those shared classes and CSS variables instead of duplicating page-card, eyebrow, and body-copy styling locally.
 
@@ -53,4 +54,20 @@ Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.
   - Route components still compile with local `styles` blocks, but those should stay minimal so shared primitives do not drift across workspace and admin surfaces.
   - Useful context (e.g., "the evaluation panel is in component X")
   - The shell keeps its route-specific structure in `src/app/core/layout/app-shell.component.ts`, while the visual system now lives centrally in `src/styles.scss`.
+---
+
+## 2026-03-24 12:59:57 CET - US-004
+Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.codex-last-message-iter-3.txt
+- Implemented a root-provided browser storage service that reads and writes `skillStudio.skills`, `skillStudio.tags`, `skillStudio.settings`, and `skillStudio.schemaVersion`, with first-run defaults for schema version, empty skills, and v1 settings.
+- Registered storage bootstrap in `src/app/app.config.ts` with an application initializer so default tags are seeded before the shell renders, without duplicating them on reload.
+- Extended Playwright coverage to assert the bootstrapped localStorage payloads and confirm the three semantic default tags remain stable across a page reload.
+- Files changed: `AGENTS.md`, `src/app/app.config.ts`, `src/app/core/services/browser-storage.service.ts`, `tests/app-shell.spec.ts`, `scripts/ralph/prd.json`, `scripts/ralph/progress.txt`
+- **Learnings for future iterations:**
+  - Patterns discovered (e.g., "this codebase uses X for Y")
+  - App-level persistence bootstrap should be wired through `APP_INITIALIZER` in `src/app/app.config.ts`, which keeps localStorage schema setup independent of any specific route.
+  - Playwright can inspect `window.localStorage` directly, which is a straightforward way to verify bootstrap behavior for foundation stories that do not yet expose persistence in the UI.
+  - Gotchas encountered (e.g., "don't forget to update Z when changing W")
+  - The bootstrap logic should distinguish between a missing storage key and an intentionally empty array so future migrations do not rewrite valid empty collections on every app start.
+  - Useful context (e.g., "the evaluation panel is in component X")
+  - The storage layer currently lives in `src/app/core/services/browser-storage.service.ts`, making that the right extension point for later schema migrations and persistence helpers.
 ---

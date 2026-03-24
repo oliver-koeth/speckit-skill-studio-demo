@@ -26,3 +26,38 @@ test('redirects unknown routes back to the workspace entry point', async ({ page
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByRole('heading', { name: 'Draft skills from a single shared studio shell.' })).toBeVisible();
 });
+
+test('bootstraps schema version and default browser storage records once', async ({ page }) => {
+  await page.goto('/');
+
+  const initialState = await page.evaluate(() => ({
+    schemaVersion: window.localStorage.getItem('skillStudio.schemaVersion'),
+    skills: window.localStorage.getItem('skillStudio.skills'),
+    settings: window.localStorage.getItem('skillStudio.settings'),
+    tags: window.localStorage.getItem('skillStudio.tags')
+  }));
+
+  expect(initialState.schemaVersion).toBe('1');
+  expect(JSON.parse(initialState.skills ?? 'null')).toEqual([]);
+  expect(JSON.parse(initialState.settings ?? 'null')).toEqual({
+    openAiApiKey: '',
+    themeMode: 'light',
+    showSecurityWarningDismissed: false
+  });
+  expect(JSON.parse(initialState.tags ?? 'null')).toEqual([
+    expect.objectContaining({ id: 'tag-programming', name: 'Programming' }),
+    expect.objectContaining({ id: 'tag-operations', name: 'Operations' }),
+    expect.objectContaining({ id: 'tag-management', name: 'Management' })
+  ]);
+
+  await page.reload();
+
+  const reloadedTags = await page.evaluate(() => JSON.parse(window.localStorage.getItem('skillStudio.tags') ?? '[]'));
+
+  expect(reloadedTags).toHaveLength(3);
+  expect(reloadedTags.map((tag: { id: string }) => tag.id)).toEqual([
+    'tag-programming',
+    'tag-operations',
+    'tag-management'
+  ]);
+});
