@@ -6,6 +6,12 @@ body {
 body {
   margin: 0;
   font-family: "Segoe UI", sans-serif;
-  background: #f4f7fb;
+  background: #edf3f9;
   color: #122033;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }

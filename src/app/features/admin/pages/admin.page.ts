@@ -4,30 +4,24 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   standalone: true,
   selector: 'app-admin-page',
   template: `
-    <main class="page">
-      <section class="card">
-        <p class="eyebrow">Admin</p>
-        <h1>Admin tools will live here.</h1>
-        <p>
-          This route placeholder confirms the standalone router foundation is wired before the shared
-          shell and feature UI are introduced.
-        </p>
-      </section>
-    </main>
+    <section class="page-card">
+      <p class="eyebrow">Admin</p>
+      <h1>Administration tools share the same global frame.</h1>
+      <p class="body">
+        This placeholder confirms the admin entry point lives inside the common shell, with the
+        header and route navigation staying consistent across the app.
+      </p>
+    </section>
   `,
   styles: [
     `
-      .page {
-        padding: 2rem;
-      }
-
-      .card {
+      .page-card {
         max-width: 48rem;
         padding: 2rem;
-        border: 1px solid #d8e1ec;
-        border-radius: 1rem;
+        border: 1px solid #d4e0ef;
+        border-radius: 1.5rem;
         background: #ffffff;
-        box-shadow: 0 24px 60px rgba(14, 31, 53, 0.08);
+        box-shadow: 0 28px 80px rgba(14, 31, 53, 0.08);
       }
 
       .eyebrow {
@@ -36,7 +30,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         font-weight: 700;
         letter-spacing: 0.12em;
         text-transform: uppercase;
-        color: #2563eb;
+        color: #1f5db8;
       }
 
       h1 {
@@ -44,8 +38,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         font-size: clamp(2rem, 4vw, 2.75rem);
       }
 
-      p {
+      .body {
         margin: 0;
+        max-width: 42rem;
         line-height: 1.6;
       }
     `

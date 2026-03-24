@@ -3,6 +3,8 @@
 - Keep the Angular app standalone-first: app bootstrap stays in `src/main.ts`, shared router setup stays in `src/app/app.routes.ts`, and route entry points should use `loadComponent`.
 - Preserve the planned feature structure under `src/app/`: route pages belong in `features/<feature>/pages/`, while reusable cross-cutting code belongs under `core/` or `shared/`.
 - This project is aligned to Playwright-only browser verification; do not add Karma/Jasmine scaffolding back unless the product requirements change.
+- Shared app chrome should live in a standalone shell component mounted from `src/app/app.routes.ts`; keep feature pages as child routes so the header and navigation are defined once.
+- Browser verification runs through `playwright.config.ts`, which starts `ng serve` on `127.0.0.1:4200`; store UI specs under `tests/` and ignore generated `test-results/` artifacts.
 
 ## 2026-03-24 12:48:07 CET - US-001
 Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.codex-last-message-iter-1.txt
@@ -18,4 +20,20 @@ Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.
   - The Angular CLI generator created a nested `var/.../tmp...` scaffold path in this environment, so clean that artifact out after copying files into the repo root.
   - Useful context (e.g., "the evaluation panel is in component X")
   - `npm run build` is currently the best Angular-level validation check, and `npm run typecheck` covers the standalone app TypeScript surface.
+---
+
+## 2026-03-24 12:52:57 CET - US-002
+Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.codex-last-message-iter-1.txt
+- Implemented a standalone shell route with a global branded header, shared navigation, and route children for the workspace and admin placeholders.
+- Added the public NTT DATA logo as an app asset, refreshed both placeholder pages to render inside the shared shell, and preserved the wildcard redirect back to `/`.
+- Added Playwright browser verification for the workspace route, admin route, and unknown-route redirect, plus repo ignore rules for generated Playwright artifacts.
+- Files changed: `.gitignore`, `AGENTS.md`, `playwright.config.ts`, `src/app/app.routes.ts`, `src/app/core/layout/app-shell.component.ts`, `src/app/features/admin/pages/admin.page.ts`, `src/app/features/workspace/pages/workspace.page.ts`, `src/assets/brand/ntt-data-logo.svg`, `src/styles.scss`, `scripts/ralph/prd.json`, `scripts/ralph/progress.txt`, `tests/app-shell.spec.ts`
+- **Learnings for future iterations:**
+  - Patterns discovered (e.g., "this codebase uses X for Y")
+  - Shared navigation belongs in a top-level shell route so feature pages can stay small standalone components loaded as route children.
+  - Playwright is already wired to self-host the Angular app through `playwright.config.ts`, so UI stories can be verified with `npm run e2e` without manual server startup.
+  - Gotchas encountered (e.g., "don't forget to update Z when changing W")
+  - Playwright role queries can collide with nested branded content, so use exact accessible names where nav labels may also appear inside the brand block.
+  - Useful context (e.g., "the evaluation panel is in component X")
+  - The official public NTT DATA logo asset works well from `src/assets/brand/ntt-data-logo.svg` and can be reused by later design-token work.
 ---
