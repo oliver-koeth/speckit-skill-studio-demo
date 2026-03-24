@@ -27,7 +27,7 @@ Purpose:
 Codex prompt:
 
 ```text
-Suggest a name for the git branch for phase <NUM>. Branch shall have prefix ralph/. Check if the name suits me. If it does not suit me, abort. If it does suit me, check it out as a new branch.
+You find the spec in specs/001-skill-studio. The tasks have been defined in tasks.md. Suggest a name for the git branch for phase <NUM>. Branch shall have prefix ralph/. Check if the name suits me. If it does not suit me, abort. If it does suit me, check it out as a new branch.
 ```
 
 Expected outcome:
@@ -43,7 +43,7 @@ Purpose:
 - work on the branch that is already created and checked out
 
 ```text
-Use the PRD skill to create the PRD/backlog for phase <num> from PLAN.md. If things need to be clarified, do not hesitate to ask. The branch for this phase is already created and checked out.
+You find the spec in specs/001-skill-studio. The tasks have been defined in tasks.md. Use the PRD skill to create the PRD/backlog for phase <num> from PLAN.md. If things need to be clarified, do not hesitate to ask. The branch for this phase is already created and checked out.
 ```
 
 Expected outcome:
