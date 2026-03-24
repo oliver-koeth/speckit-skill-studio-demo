@@ -1,0 +1,87 @@
+{
+  "project": "Skill Studio",
+  "branchName": "ralph/phase-1-foundation",
+  "description": "Phase 1 foundation for the Skill Studio Angular SPA, covering standalone app scaffolding, shared shell and routes, NTT DATA-inspired design tokens, localStorage bootstrap, and shared data models.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Scaffold the Angular application foundation",
+      "description": "As a developer, I want a standalone Angular app scaffold with the planned folder structure so that later feature work can be added without restructuring the project.",
+      "acceptanceCriteria": [
+        "Angular app uses standalone bootstrapping rather than NgModule-based app startup",
+        "Project structure includes core, features, and shared areas consistent with the implementation plan",
+        "Route configuration exists in a central app routes file",
+        "App can start successfully without backend dependencies",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Add the application shell and route-level entry points",
+      "description": "As a user, I want a consistent shell with a global header and working navigation between workspace and admin pages so that the app has a usable frame before detailed features are built.",
+      "acceptanceCriteria": [
+        "Root route / renders a workspace page placeholder inside the shared shell",
+        "/admin renders an admin page placeholder inside the shared shell",
+        "A global header is visible on both routes",
+        "The header includes demo branding with public NTT DATA logo placement",
+        "Unknown routes redirect to /",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Establish shared design tokens and layout primitives",
+      "description": "As a developer, I want reusable theme tokens and layout primitives so that later UI work stays visually consistent with the intended enterprise design language.",
+      "acceptanceCriteria": [
+        "Shared style tokens define header, surface, border, and accent colors aligned with the design notes",
+        "Typography, spacing, and card/container primitives are defined in a reusable way",
+        "Global shell and page placeholders consume the shared tokens rather than hardcoded one-off values",
+        "Public NTT DATA logo assets are stored in a stable app asset location for later reuse",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Bootstrap browser storage and schema versioning",
+      "description": "As a developer, I want a storage service with schema version handling and default-tag bootstrap so that the app starts from a valid localStorage state on first load and can evolve safely later.",
+      "acceptanceCriteria": [
+        "Storage service reads and writes the localStorage keys skillStudio.skills, skillStudio.tags, skillStudio.settings, and skillStudio.schemaVersion",
+        "First-run bootstrap initializes schema version 1",
+        "First-run bootstrap creates default tags Programming, Operations, and Management with fixed semantic IDs tag-programming, tag-operations, and tag-management when no tag data exists",
+        "Bootstrap does not duplicate tags on later app loads",
+        "Storage service exposes typed read/write helpers or equivalent APIs for skills, tags, and settings",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Define shared models for persisted data and draft state",
+      "description": "As a developer, I want shared TypeScript models for skill records, tags, settings, and drafts so that later features use one consistent contract for persistence and UI state.",
+      "acceptanceCriteria": [
+        "Shared model definitions exist for SkillRecord, TagRecord, SettingsRecord, and SkillDraft",
+        "Model fields match the data model specification, including timestamps and single-tag ownership",
+        "Settings model includes openAiApiKey, themeMode, and showSecurityWarningDismissed",
+        "Draft model includes dirty and source state for future workspace flows",
+        "Model definitions are imported from a shared location suitable for later services and UI components",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}
