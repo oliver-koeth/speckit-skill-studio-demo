@@ -46,7 +46,11 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
         min-height: 100%;
         background:
           radial-gradient(circle at top right, rgba(74, 134, 232, 0.18), transparent 28%),
-          linear-gradient(180deg, #0e2343 0 7.5rem, #edf3f9 7.5rem 100%);
+          linear-gradient(
+            180deg,
+            var(--ss-color-header) 0 7.5rem,
+            var(--ss-color-surface-alt) 7.5rem 100%
+          );
       }
 
       .header {
@@ -54,6 +58,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
         align-items: center;
         justify-content: space-between;
         gap: 1.5rem;
+        width: min(100%, var(--ss-content-width));
+        margin-inline: auto;
         padding: 1.5rem 2rem;
       }
 
@@ -71,7 +77,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
         justify-content: center;
         width: 9.5rem;
         padding: 0.8rem 1rem;
-        border-radius: 999px;
+        border-radius: var(--ss-radius-pill);
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
       }
@@ -85,7 +91,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
       .brand-copy {
         display: grid;
         gap: 0.25rem;
-        color: #f8fbff;
+        color: var(--ss-color-ink-inverse);
       }
 
       .brand-kicker {
@@ -107,7 +113,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
         gap: 0.5rem;
         padding: 0.35rem;
         border: 1px solid rgba(255, 255, 255, 0.16);
-        border-radius: 999px;
+        border-radius: var(--ss-radius-pill);
         background: rgba(7, 22, 43, 0.36);
         backdrop-filter: blur(12px);
       }
@@ -129,8 +135,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
       }
 
       .nav a.is-active {
-        color: #0f2342;
-        background: #ffffff;
+        color: var(--ss-color-header);
+        background: var(--ss-color-surface);
       }
 
       .content {
