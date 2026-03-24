@@ -1,26 +1,6 @@
 import { Injectable } from '@angular/core';
 
-interface StoredSkill {
-  id: string;
-  title: string;
-  tagId: string;
-  markdownBody: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface StoredTag {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface StoredSettings {
-  openAiApiKey: string;
-  themeMode: 'light';
-  showSecurityWarningDismissed: boolean;
-}
+import { SettingsRecord, SkillRecord, TagRecord } from '../../shared/models/skill-studio.models';
 
 const STORAGE_KEYS = {
   skills: 'skillStudio.skills',
@@ -31,13 +11,13 @@ const STORAGE_KEYS = {
 
 const CURRENT_SCHEMA_VERSION = 1;
 
-const DEFAULT_SETTINGS: StoredSettings = {
+const DEFAULT_SETTINGS: SettingsRecord = {
   openAiApiKey: '',
   themeMode: 'light',
   showSecurityWarningDismissed: false
 };
 
-const DEFAULT_TAGS: ReadonlyArray<Pick<StoredTag, 'id' | 'name'>> = [
+const DEFAULT_TAGS: ReadonlyArray<Pick<TagRecord, 'id' | 'name'>> = [
   { id: 'tag-programming', name: 'Programming' },
   { id: 'tag-operations', name: 'Operations' },
   { id: 'tag-management', name: 'Management' }
@@ -65,27 +45,27 @@ export class BrowserStorageService {
     }
   }
 
-  readSkills(): StoredSkill[] {
+  readSkills(): SkillRecord[] {
     return this.readJson(STORAGE_KEYS.skills, []);
   }
 
-  writeSkills(skills: StoredSkill[]): void {
+  writeSkills(skills: SkillRecord[]): void {
     this.writeJson(STORAGE_KEYS.skills, skills);
   }
 
-  readTags(): StoredTag[] {
+  readTags(): TagRecord[] {
     return this.readJson(STORAGE_KEYS.tags, []);
   }
 
-  writeTags(tags: StoredTag[]): void {
+  writeTags(tags: TagRecord[]): void {
     this.writeJson(STORAGE_KEYS.tags, tags);
   }
 
-  readSettings(): StoredSettings {
+  readSettings(): SettingsRecord {
     return this.readJson(STORAGE_KEYS.settings, DEFAULT_SETTINGS);
   }
 
-  writeSettings(settings: StoredSettings): void {
+  writeSettings(settings: SettingsRecord): void {
     this.writeJson(STORAGE_KEYS.settings, settings);
   }
 
@@ -104,7 +84,7 @@ export class BrowserStorageService {
     this.storage.setItem(STORAGE_KEYS.schemaVersion, String(version));
   }
 
-  private buildDefaultTags(): StoredTag[] {
+  private buildDefaultTags(): TagRecord[] {
     const timestamp = new Date().toISOString();
 
     return DEFAULT_TAGS.map((tag) => ({

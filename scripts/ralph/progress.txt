@@ -7,6 +7,7 @@
 - App-wide localStorage bootstrap belongs in `src/app/app.config.ts` via an application initializer, which keeps schema seeding out of route components and ensures storage is ready before the shell renders.
 - Browser verification runs through `playwright.config.ts`, which starts `ng serve` on `127.0.0.1:4200`; store UI specs under `tests/` and ignore generated `test-results/` artifacts.
 - App-wide design tokens and layout primitives belong in `src/styles.scss`; standalone route components should consume those shared classes and CSS variables instead of duplicating page-card, eyebrow, and body-copy styling locally.
+- Shared data contracts belong under `src/app/shared/models/` as framework-agnostic interfaces and types; services like browser storage should import those definitions instead of keeping duplicate local interfaces.
 
 ## 2026-03-24 12:48:07 CET - US-001
 Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.codex-last-message-iter-1.txt
@@ -70,4 +71,18 @@ Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.
   - The bootstrap logic should distinguish between a missing storage key and an intentionally empty array so future migrations do not rewrite valid empty collections on every app start.
   - Useful context (e.g., "the evaluation panel is in component X")
   - The storage layer currently lives in `src/app/core/services/browser-storage.service.ts`, making that the right extension point for later schema migrations and persistence helpers.
+---
+## 2026-03-24 13:02:31 CET - US-005
+Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.codex-last-message-iter-4.txt
+- Implemented shared framework-agnostic TypeScript contracts for `SkillRecord`, `TagRecord`, `SettingsRecord`, and `SkillDraft`, including the draft `source` union and the persisted settings `themeMode` type.
+- Rewired the browser storage service to import the shared models from `src/app/shared/models/skill-studio.models.ts` instead of maintaining duplicate inline interfaces.
+- Verified the change with `npm run typecheck`, `npm run build`, and `npm run e2e`.
+- Files changed: `AGENTS.md`, `src/app/core/services/browser-storage.service.ts`, `src/app/shared/models/skill-studio.models.ts`, `scripts/ralph/prd.json`, `scripts/ralph/progress.txt`
+- **Learnings for future iterations:**
+  - Patterns discovered (e.g., "this codebase uses X for Y")
+  - Shared data contracts should live in `src/app/shared/models/` so future workspace, admin, and persistence code can import one stable source of truth.
+  - Gotchas encountered (e.g., "don't forget to update Z when changing W")
+  - The Phase 1 data model spec is documented in `specs/001-skill-studio/data-model.md`, and it is more complete than the current app usage, so check that file before extending persistence shapes.
+  - Useful context (e.g., "the evaluation panel is in component X")
+  - `BrowserStorageService` is already the first consumer of these models, which makes it the easiest place to detect contract drift when later stories add CRUD flows.
 ---
