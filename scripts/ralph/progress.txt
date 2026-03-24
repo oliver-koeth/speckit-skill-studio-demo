@@ -3,6 +3,11 @@
 - Keep the Angular app standalone-first: app bootstrap stays in `src/main.ts`, shared router setup stays in `src/app/app.routes.ts`, and route entry points should use `loadComponent`.
 - Preserve the planned feature structure under `src/app/`: route pages belong in `features/<feature>/pages/`, while reusable cross-cutting code belongs under `core/` or `shared/`.
 - This project is aligned to Playwright-only browser verification; do not add Karma/Jasmine scaffolding back unless the product requirements change.
+- Shared app chrome should live in a standalone shell component mounted from `src/app/app.routes.ts`; keep feature pages as child routes so the header and navigation are defined once.
+- App-wide localStorage bootstrap belongs in `src/app/app.config.ts` via an application initializer, which keeps schema seeding out of route components and ensures storage is ready before the shell renders.
+- Browser verification runs through `playwright.config.ts`, which starts `ng serve` on `127.0.0.1:4200`; store UI specs under `tests/` and ignore generated `test-results/` artifacts.
+- App-wide design tokens and layout primitives belong in `src/styles.scss`; standalone route components should consume those shared classes and CSS variables instead of duplicating page-card, eyebrow, and body-copy styling locally.
+- Shared data contracts belong under `src/app/shared/models/` as framework-agnostic interfaces and types; services like browser storage should import those definitions instead of keeping duplicate local interfaces.
 
 ## 2026-03-24 12:48:07 CET - US-001
 Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.codex-last-message-iter-1.txt
@@ -18,4 +23,66 @@ Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.
   - The Angular CLI generator created a nested `var/.../tmp...` scaffold path in this environment, so clean that artifact out after copying files into the repo root.
   - Useful context (e.g., "the evaluation panel is in component X")
   - `npm run build` is currently the best Angular-level validation check, and `npm run typecheck` covers the standalone app TypeScript surface.
+---
+
+## 2026-03-24 12:52:57 CET - US-002
+Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.codex-last-message-iter-1.txt
+- Implemented a standalone shell route with a global branded header, shared navigation, and route children for the workspace and admin placeholders.
+- Added the public NTT DATA logo as an app asset, refreshed both placeholder pages to render inside the shared shell, and preserved the wildcard redirect back to `/`.
+- Added Playwright browser verification for the workspace route, admin route, and unknown-route redirect, plus repo ignore rules for generated Playwright artifacts.
+- Files changed: `.gitignore`, `AGENTS.md`, `playwright.config.ts`, `src/app/app.routes.ts`, `src/app/core/layout/app-shell.component.ts`, `src/app/features/admin/pages/admin.page.ts`, `src/app/features/workspace/pages/workspace.page.ts`, `src/assets/brand/ntt-data-logo.svg`, `src/styles.scss`, `scripts/ralph/prd.json`, `scripts/ralph/progress.txt`, `tests/app-shell.spec.ts`
+- **Learnings for future iterations:**
+  - Patterns discovered (e.g., "this codebase uses X for Y")
+  - Shared navigation belongs in a top-level shell route so feature pages can stay small standalone components loaded as route children.
+  - Playwright is already wired to self-host the Angular app through `playwright.config.ts`, so UI stories can be verified with `npm run e2e` without manual server startup.
+  - Gotchas encountered (e.g., "don't forget to update Z when changing W")
+  - Playwright role queries can collide with nested branded content, so use exact accessible names where nav labels may also appear inside the brand block.
+  - Useful context (e.g., "the evaluation panel is in component X")
+- The official public NTT DATA logo asset works well from `src/assets/brand/ntt-data-logo.svg` and can be reused by later design-token work.
+---
+
+## 2026-03-24 12:56:30 CET - US-003
+Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.codex-last-message-iter-2.txt
+- Implemented shared design tokens, typography defaults, spacing scale, and reusable layout primitives in `src/styles.scss` for cards, section copy, and framed surfaces.
+- Updated the shell and both placeholder pages to consume the shared CSS variables and utility classes instead of maintaining duplicate inline styles per route component.
+- Extended Playwright browser verification to assert the shared card radius, uppercase eyebrow treatment, and framed admin surface styling while `npm run typecheck`, `npm run build`, and `npm run e2e` all pass.
+- Files changed: `AGENTS.md`, `src/styles.scss`, `src/app/core/layout/app-shell.component.ts`, `src/app/features/workspace/pages/workspace.page.ts`, `src/app/features/admin/pages/admin.page.ts`, `tests/app-shell.spec.ts`, `scripts/ralph/prd.json`, `scripts/ralph/progress.txt`
+- **Learnings for future iterations:**
+  - Patterns discovered (e.g., "this codebase uses X for Y")
+  - Global theming is expected to flow through CSS custom properties in `src/styles.scss`, with standalone page components leaning on shared utility classes for cards and section copy.
+  - Playwright can verify design-token adoption with computed CSS assertions, which is useful for foundation stories where most changes are structural styling rather than new interactive behavior.
+  - Gotchas encountered (e.g., "don't forget to update Z when changing W")
+  - Route components still compile with local `styles` blocks, but those should stay minimal so shared primitives do not drift across workspace and admin surfaces.
+  - Useful context (e.g., "the evaluation panel is in component X")
+  - The shell keeps its route-specific structure in `src/app/core/layout/app-shell.component.ts`, while the visual system now lives centrally in `src/styles.scss`.
+---
+
+## 2026-03-24 12:59:57 CET - US-004
+Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.codex-last-message-iter-3.txt
+- Implemented a root-provided browser storage service that reads and writes `skillStudio.skills`, `skillStudio.tags`, `skillStudio.settings`, and `skillStudio.schemaVersion`, with first-run defaults for schema version, empty skills, and v1 settings.
+- Registered storage bootstrap in `src/app/app.config.ts` with an application initializer so default tags are seeded before the shell renders, without duplicating them on reload.
+- Extended Playwright coverage to assert the bootstrapped localStorage payloads and confirm the three semantic default tags remain stable across a page reload.
+- Files changed: `AGENTS.md`, `src/app/app.config.ts`, `src/app/core/services/browser-storage.service.ts`, `tests/app-shell.spec.ts`, `scripts/ralph/prd.json`, `scripts/ralph/progress.txt`
+- **Learnings for future iterations:**
+  - Patterns discovered (e.g., "this codebase uses X for Y")
+  - App-level persistence bootstrap should be wired through `APP_INITIALIZER` in `src/app/app.config.ts`, which keeps localStorage schema setup independent of any specific route.
+  - Playwright can inspect `window.localStorage` directly, which is a straightforward way to verify bootstrap behavior for foundation stories that do not yet expose persistence in the UI.
+  - Gotchas encountered (e.g., "don't forget to update Z when changing W")
+  - The bootstrap logic should distinguish between a missing storage key and an intentionally empty array so future migrations do not rewrite valid empty collections on every app start.
+  - Useful context (e.g., "the evaluation panel is in component X")
+  - The storage layer currently lives in `src/app/core/services/browser-storage.service.ts`, making that the right extension point for later schema migrations and persistence helpers.
+---
+## 2026-03-24 13:02:31 CET - US-005
+Codex output: /Users/Oliver.Koeth/work/speckit-skill-studio-demo/scripts/ralph/.codex-last-message-iter-4.txt
+- Implemented shared framework-agnostic TypeScript contracts for `SkillRecord`, `TagRecord`, `SettingsRecord`, and `SkillDraft`, including the draft `source` union and the persisted settings `themeMode` type.
+- Rewired the browser storage service to import the shared models from `src/app/shared/models/skill-studio.models.ts` instead of maintaining duplicate inline interfaces.
+- Verified the change with `npm run typecheck`, `npm run build`, and `npm run e2e`.
+- Files changed: `AGENTS.md`, `src/app/core/services/browser-storage.service.ts`, `src/app/shared/models/skill-studio.models.ts`, `scripts/ralph/prd.json`, `scripts/ralph/progress.txt`
+- **Learnings for future iterations:**
+  - Patterns discovered (e.g., "this codebase uses X for Y")
+  - Shared data contracts should live in `src/app/shared/models/` so future workspace, admin, and persistence code can import one stable source of truth.
+  - Gotchas encountered (e.g., "don't forget to update Z when changing W")
+  - The Phase 1 data model spec is documented in `specs/001-skill-studio/data-model.md`, and it is more complete than the current app usage, so check that file before extending persistence shapes.
+  - Useful context (e.g., "the evaluation panel is in component X")
+  - `BrowserStorageService` is already the first consumer of these models, which makes it the easiest place to detect contract drift when later stories add CRUD flows.
 ---
